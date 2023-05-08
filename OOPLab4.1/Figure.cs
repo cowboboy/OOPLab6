@@ -8,6 +8,8 @@ namespace OOPLab4._1
 {
     internal abstract class Figure
     {
+        public int x { get; set; }
+        public int y { get; set; }
         public bool isActive { get; set; }
         protected Pen selectedPen, standartPen;
         public Color currentColor { get; set; } = Color.White;
@@ -15,5 +17,6 @@ namespace OOPLab4._1
         public abstract bool intersects(Point coords);
         public abstract void changeColor(Color newColor);
         public abstract void move(Point direction);
+        public abstract void getRect(ref Point leftTop, ref Point rightBottom);
     }
 }

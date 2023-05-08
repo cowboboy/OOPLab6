@@ -8,8 +8,6 @@ namespace OOPLab4._1
 {
     internal class Square : Figure
     {
-        public int x { get; set; }
-        public int y { get; set; }
         public int sideLength { get; set; }
 
         public Square(int x, int y, Color color, int sideLength = 50)
@@ -58,6 +56,14 @@ namespace OOPLab4._1
         {
             x += direction.X;
             y += direction.Y;
+        }
+
+        public override void getRect(ref Point leftTop, ref Point rightBottom)
+        {
+            leftTop.X = x - sideLength / 2;
+            leftTop.Y = y - sideLength / 2;
+            rightBottom.X = x + sideLength / 2;
+            rightBottom.Y = y + sideLength / 2;
         }
     }
 }

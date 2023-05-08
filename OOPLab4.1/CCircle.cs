@@ -8,8 +8,6 @@ namespace OOPLab4._1
 {
     internal class CCircle : Figure
     {
-        public int x { get; set; }
-        public int y { get; set; }
         public int radius { get; set; }
 
         public CCircle(int x, int y, Color color, int radius = 50)
@@ -56,6 +54,14 @@ namespace OOPLab4._1
         {
             x += direction.X;
             y += direction.Y;
+        }
+
+        public override void getRect(ref Point leftTop, ref Point rightBottom)
+        {
+            leftTop.X = x - radius;
+            leftTop.Y = y - radius;
+            rightBottom.X = x + radius;
+            rightBottom.Y = y + radius;
         }
     }
 }

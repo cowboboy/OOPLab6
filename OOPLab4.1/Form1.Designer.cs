@@ -40,7 +40,7 @@
             this.PaintBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.PaintBox.Location = new System.Drawing.Point(78, 77);
             this.PaintBox.Name = "PaintBox";
-            this.PaintBox.Size = new System.Drawing.Size(566, 312);
+            this.PaintBox.Size = new System.Drawing.Size(578, 312);
             this.PaintBox.TabIndex = 0;
             this.PaintBox.Paint += new System.Windows.Forms.PaintEventHandler(this.PaintBox_Paint);
             this.PaintBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PaintBox_MouseClick);

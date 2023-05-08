@@ -9,6 +9,9 @@ namespace OOPLab4._1
         bool pressedCtrl = false;
         bool isMove = false;
 
+        Point leftTopPaintBox;
+        Point rightBottomPaintBox;
+
         enum Figures
         {
             Circle,
@@ -33,6 +36,9 @@ namespace OOPLab4._1
             setColor.Items.AddRange(colors);
             setColor.SelectedItem = Color.White;
             currentColor = Color.White;
+            leftTopPaintBox = new Point(0, 0);
+            rightBottomPaintBox.X = PaintBox.Width;
+            rightBottomPaintBox.Y = PaintBox.Height;
         }
 
         private void PaintBox_MouseClick(object sender, MouseEventArgs e)
@@ -107,7 +113,12 @@ namespace OOPLab4._1
                         element = new CCircle(e.Location.X, e.Location.Y, currentColor);
                         break;
                 }
-                storage.push_back(element);
+                Point leftTop = new Point(), rightBottom = new Point();
+                element.getRect(ref leftTop, ref rightBottom);
+                if (isNotCollision(leftTop, rightBottom, leftTopPaintBox, rightBottomPaintBox))
+                {
+                    storage.push_back(element);
+                }
             }
 
             // Перерисовка
@@ -181,17 +192,69 @@ namespace OOPLab4._1
             PaintBox.Refresh();
         }
 
+        private void getRect(ref Point leftTop, ref Point rightBottom)
+        {
+            storage.getObject(0).getRect(ref leftTop, ref rightBottom);
+            Point curLeftTop = new Point();
+            Point curRightBottom = new Point();
+            for (int i = 1; i < storage.size; ++i)
+            {
+                Figure curElem = storage.getObject(i);
+                curElem.getRect(ref curLeftTop, ref curRightBottom);
+                if (curElem.isActive)
+                {
+                    if (curLeftTop.X < leftTop.X)
+                    {
+                        leftTop.X = curLeftTop.X;
+                    }
+                    if (curLeftTop.Y < leftTop.Y)
+                    {
+                        leftTop.Y = curLeftTop.Y;
+                    }
+                    if (curRightBottom.X > rightBottom.X)
+                    {
+                        rightBottom.X = curRightBottom.X;
+                    }
+                    if (curRightBottom.Y > rightBottom.Y)
+                    {
+                        rightBottom.Y = curRightBottom.Y;
+                    }
+                }
+            }
+        }
+
+        private bool isNotCollision(in Point leftTop, in Point rightBottom, 
+                                    in Point leftTopPaintBox, in Point rightBottomPaintBox)
+        {
+            if (leftTop.X > leftTopPaintBox.X && leftTop.Y > leftTopPaintBox.Y &&
+                rightBottom.X < rightBottomPaintBox.X && rightBottom.Y < rightBottomPaintBox.Y)
+            {
+                return true;
+            }
+            return false;
+        }
+
         private void PaintBox_MouseMove(object sender, MouseEventArgs e)
         {
+            Point leftTop = new Point();
+            Point rightBottom = new Point();
             if (isMove)
             {
-                for (int i = 0; i < storage.size; ++i)
+                getRect(ref leftTop, ref rightBottom);
+                int dX = e.Location.X - lastMouseCoords.X;
+                int dY = e.Location.Y - lastMouseCoords.Y;
+                leftTop.X += dX;
+                leftTop.Y += dY;
+                rightBottom.X += dX;
+                rightBottom.Y += dY;
+                if (isNotCollision(leftTop, rightBottom, leftTopPaintBox, rightBottomPaintBox))
                 {
-                    if (storage.getObject(i).isActive)
+                    for (int i = 0; i < storage.size; ++i)
                     {
-                        int dX = e.Location.X - lastMouseCoords.X;
-                        int dY = e.Location.Y - lastMouseCoords.Y;
-                        storage.getObject(i).move(new Point(dX, dY));
+                        if (storage.getObject(i).isActive)
+                        {
+                            storage.getObject(i).move(new Point(dX, dY));
+                        }
                     }
                 }
                 PaintBox.Refresh();
