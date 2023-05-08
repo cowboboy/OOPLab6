@@ -12,16 +12,15 @@ namespace OOPLab4._1
         public int y { get; set; }
         public int radius { get; set; }
 
-        Pen selectedPen, standartPen;
-
-        public CCircle(int x, int y, int radius = 50)
+        public CCircle(int x, int y, Color color, int radius = 50)
         {
             this.x = x;
             this.y = y;
             this.radius = radius;
-            standartPen = new Pen(Color.Black);
-            selectedPen = new Pen(Color.Red);
+            standartPen = new Pen(Color.Black, 5);
+            selectedPen = new Pen(Color.Red, 5);
             isActive = true;
+            currentColor = color;
         }
 
         public override void myPaint(in Graphics g)
@@ -29,9 +28,11 @@ namespace OOPLab4._1
             if (isActive)
             {
                 g.DrawEllipse(selectedPen, x - radius, y - radius, radius * 2, radius * 2);
+                g.FillEllipse(new SolidBrush(currentColor), new Rectangle(x - radius, y - radius, radius * 2, radius * 2));
             } else
             {
                 g.DrawEllipse(standartPen, x - radius, y - radius, radius * 2, radius * 2);
+                g.FillEllipse(new SolidBrush(currentColor), new Rectangle(x - radius, y - radius, radius * 2, radius * 2));
             }
         }
 
@@ -44,6 +45,17 @@ namespace OOPLab4._1
             {
                 return false;
             }
+        }
+
+        public override void changeColor(Color newColor)
+        {
+            currentColor = newColor;
+        }
+
+        public override void move(Point direction)
+        {
+            x += direction.X;
+            y += direction.Y;
         }
     }
 }

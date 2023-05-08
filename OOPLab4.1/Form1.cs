@@ -6,7 +6,8 @@ namespace OOPLab4._1
 
         bool isCtrlActive = false;
         bool isCollisionActive = true;
-        bool pressedCtrl = false; 
+        bool pressedCtrl = false;
+        bool isMove = false;
 
         enum Figures
         {
@@ -17,6 +18,11 @@ namespace OOPLab4._1
         }
         Figures currentFigure;
 
+        Object[] colors = {Color.White, Color.Blue, Color.Green, Color.Yellow};
+        Color currentColor;
+
+        Point lastMouseCoords;
+
         public Form1()
         {
             InitializeComponent();
@@ -24,6 +30,9 @@ namespace OOPLab4._1
             setFigure.DataSource = Enum.GetValues(typeof(Figures));
             setFigure.SelectedItem = Figures.Circle;
             currentFigure = Figures.Circle;
+            setColor.Items.AddRange(colors);
+            setColor.SelectedItem = Color.White;
+            currentColor = Color.White;
         }
 
         private void PaintBox_MouseClick(object sender, MouseEventArgs e)
@@ -86,16 +95,16 @@ namespace OOPLab4._1
                 switch (currentFigure)
                 {
                     case Figures.Circle:
-                        element = new CCircle(e.Location.X, e.Location.Y);
+                        element = new CCircle(e.Location.X, e.Location.Y, currentColor);
                         break;
                     case Figures.Square:
-                        element = new Square(e.Location.X, e.Location.Y);
+                        element = new Square(e.Location.X, e.Location.Y, currentColor);
                         break;
                     case Figures.Triangle:
-                        element = new CCircle(e.Location.X, e.Location.Y);
+                        element = new CCircle(e.Location.X, e.Location.Y, currentColor);
                         break;
                     case Figures.Section:
-                        element = new CCircle(e.Location.X, e.Location.Y);
+                        element = new CCircle(e.Location.X, e.Location.Y, currentColor);
                         break;
                 }
                 storage.push_back(element);
@@ -119,6 +128,10 @@ namespace OOPLab4._1
             {
                 pressedCtrl = true;
             }
+            if (e.KeyCode == Keys.G)
+            {
+                isMove = true;
+            }
             if (e.KeyCode == Keys.Back)
             {
                 storage.deleteActiveElements();
@@ -139,6 +152,10 @@ namespace OOPLab4._1
             {
                 pressedCtrl = false;
             }
+            if (e.KeyCode == Keys.G)
+            {
+                isMove = false;
+            }
         }
 
         private void checkBoxCollision_CheckedChanged(object sender, EventArgs e)
@@ -149,6 +166,37 @@ namespace OOPLab4._1
         private void setFigure_SelectedIndexChanged(object sender, EventArgs e)
         {
             currentFigure = (Figures)setFigure.SelectedItem;
+        }
+
+        private void setColor_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            currentColor = (Color)setColor.SelectedItem;
+            for (int i = 0; i < storage.size; ++i)
+            {
+                if (storage.getObject(i).isActive)
+                {
+                    storage.getObject(i).changeColor((Color)setColor.SelectedItem);
+                }
+            }
+            PaintBox.Refresh();
+        }
+
+        private void PaintBox_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isMove)
+            {
+                for (int i = 0; i < storage.size; ++i)
+                {
+                    if (storage.getObject(i).isActive)
+                    {
+                        int dX = e.Location.X - lastMouseCoords.X;
+                        int dY = e.Location.Y - lastMouseCoords.Y;
+                        storage.getObject(i).move(new Point(dX, dY));
+                    }
+                }
+                PaintBox.Refresh();
+            }
+            lastMouseCoords = e.Location;
         }
     }
 }

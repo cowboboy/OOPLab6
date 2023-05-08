@@ -12,16 +12,15 @@ namespace OOPLab4._1
         public int y { get; set; }
         public int sideLength { get; set; }
 
-        Pen selectedPen, standartPen;
-
-        public Square(int x, int y, int sideLength = 50)
+        public Square(int x, int y, Color color, int sideLength = 50)
         {
             this.x = x;
             this.y = y;
             this.sideLength = sideLength;
-            standartPen = new Pen(Color.Black);
-            selectedPen = new Pen(Color.Red);
+            standartPen = new Pen(Color.Black, 5);
+            selectedPen = new Pen(Color.Red, 5);
             isActive = true;
+            currentColor = color;
         }
 
         public override void myPaint(in Graphics g)
@@ -29,10 +28,12 @@ namespace OOPLab4._1
             if (isActive)
             {
                 g.DrawRectangle(selectedPen, x - sideLength / 2, y - sideLength / 2, sideLength, sideLength);
+                g.FillRectangle(new SolidBrush(currentColor), new Rectangle(x - sideLength / 2, y - sideLength / 2, sideLength, sideLength));
             }
             else
             {
                 g.DrawRectangle(standartPen, x - sideLength / 2, y - sideLength / 2, sideLength, sideLength);
+                g.FillRectangle(new SolidBrush(currentColor), new Rectangle(x - sideLength / 2, y - sideLength / 2, sideLength, sideLength));
             }
         }
 
@@ -46,6 +47,17 @@ namespace OOPLab4._1
             {
                 return false;
             }
+        }
+
+        public override void changeColor(Color newColor)
+        {
+            currentColor = newColor;
+        }
+
+        public override void move(Point direction)
+        {
+            x += direction.X;
+            y += direction.Y;
         }
     }
 }
