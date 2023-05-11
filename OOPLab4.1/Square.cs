@@ -17,7 +17,7 @@ namespace OOPLab4._1
             this.sideLength = sideLength;
             standartPen = new Pen(Color.Black, 5);
             selectedPen = new Pen(Color.Red, 5);
-            isActive = true;
+            isActive = false;
             currentColor = color;
         }
 
@@ -37,7 +37,7 @@ namespace OOPLab4._1
 
         public override bool intersects(Point coords)
         {
-            if (coords.X >= x && coords.X <= x + sideLength && coords.Y >= y && coords.Y <= y + sideLength)
+            if (coords.X >= x - sideLength / 2 && coords.X <= x + sideLength / 2 && coords.Y >= y - sideLength / 2 && coords.Y <= y + sideLength / 2)
             {
                 return true;
             }

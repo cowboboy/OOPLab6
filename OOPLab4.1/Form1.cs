@@ -18,7 +18,6 @@ namespace OOPLab4._1
             Circle,
             Square,
             Triangle,
-            Section,
         }
         Figures currentFigure;
 
@@ -108,10 +107,7 @@ namespace OOPLab4._1
                         element = new Square(e.Location.X, e.Location.Y, currentColor);
                         break;
                     case Figures.Triangle:
-                        element = new CCircle(e.Location.X, e.Location.Y, currentColor);
-                        break;
-                    case Figures.Section:
-                        element = new CCircle(e.Location.X, e.Location.Y, currentColor);
+                        element = new Triangle(e.Location.X, e.Location.Y, currentColor);
                         break;
                 }
                 Point leftTop = new Point(), rightBottom = new Point();
@@ -175,6 +171,8 @@ namespace OOPLab4._1
                 for (int i = 0; i < storage.size; ++i)
                 {
                     Point direction = new Point();
+                    //direction.X = testRightBottom.X - rightBottom.X;
+                    //direction.Y = testRightBottom.Y - rightBottom.Y;
                     direction.X = (int)(factor * (storage.getObject(i).x - leftTop.X)) - (storage.getObject(i).x - leftTop.X);
                     direction.Y = (int)(factor * (storage.getObject(i).y - leftTop.Y)) - (storage.getObject(i).y - leftTop.Y);
                     if (storage.getObject(i).isActive)
