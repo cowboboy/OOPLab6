@@ -8,6 +8,7 @@ namespace OOPLab4._1
         bool isCollisionActive = true;
         bool pressedCtrl = false;
         bool isMove = false;
+        bool isScale = false;
 
         Point leftTopPaintBox;
         Point rightBottomPaintBox;
@@ -143,6 +144,10 @@ namespace OOPLab4._1
             {
                 isMove = true;
             }
+            if (e.KeyCode == Keys.S)
+            {
+                isScale = true;
+            }
             if (e.KeyCode == Keys.Back)
             {
                 storage.deleteActiveElements();
@@ -150,6 +155,31 @@ namespace OOPLab4._1
                 // Перерисовка
                 PaintBox.Refresh();
             }
+            if (e.KeyCode == Keys.Up && isScale)
+            {
+                changeScale(1.1f);
+            } else if (e.KeyCode == Keys.Down && isScale)
+            {
+                changeScale(0.9f);
+            }
+        }
+
+        private void changeScale(float factor)
+        {
+            Point leftTop = new Point(), rightBottom = new Point();
+            getRect(ref leftTop, ref rightBottom);
+            Point testRightPoint = new Point((int)(rightBottom.X * factor), (int)(rightBottom.Y * factor));
+            if (isNotCollision(leftTop, testRightPoint, leftTopPaintBox, rightBottomPaintBox))
+            {
+                for (int i = 0; i < storage.size; ++i)
+                {
+                    if (storage.getObject(i).isActive)
+                    {
+                        storage.getObject(i).changeScale(factor);
+                    }
+                }
+            }
+            PaintBox.Refresh();
         }
 
         private void checkBoxCtrl_CheckedChanged(object sender, EventArgs e)
@@ -166,6 +196,10 @@ namespace OOPLab4._1
             if (e.KeyCode == Keys.G)
             {
                 isMove = false;
+            }
+            if (e.KeyCode == Keys.S)
+            {
+                isScale = false;
             }
         }
 

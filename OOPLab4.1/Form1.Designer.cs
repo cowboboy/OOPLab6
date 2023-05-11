@@ -37,6 +37,7 @@
             // 
             // PaintBox
             // 
+            this.PaintBox.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.PaintBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.PaintBox.Location = new System.Drawing.Point(78, 77);
             this.PaintBox.Name = "PaintBox";

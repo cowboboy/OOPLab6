@@ -65,5 +65,10 @@ namespace OOPLab4._1
             rightBottom.X = x + sideLength / 2;
             rightBottom.Y = y + sideLength / 2;
         }
+
+        public override void changeScale(float factor)
+        {
+            sideLength = Convert.ToInt32(factor * sideLength);
+        }
     }
 }

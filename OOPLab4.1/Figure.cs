@@ -17,6 +17,7 @@ namespace OOPLab4._1
         public abstract bool intersects(Point coords);
         public abstract void changeColor(Color newColor);
         public abstract void move(Point direction);
+        public abstract void changeScale(float factor);
         public abstract void getRect(ref Point leftTop, ref Point rightBottom);
     }
 }

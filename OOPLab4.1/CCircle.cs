@@ -63,5 +63,12 @@ namespace OOPLab4._1
             rightBottom.X = x + radius;
             rightBottom.Y = y + radius;
         }
+
+        public override void changeScale(float factor)
+        {
+            radius = Convert.ToInt32(factor * radius);
+            x = Convert.ToInt32(factor * x);
+            y = Convert.ToInt32(factor * y);
+        }
     }
 }
