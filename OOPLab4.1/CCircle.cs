@@ -17,7 +17,7 @@ namespace OOPLab4._1
             this.radius = radius;
             standartPen = new Pen(Color.Black, 5);
             selectedPen = new Pen(Color.Red, 5);
-            isActive = true;
+            isActive = false;
             currentColor = color;
         }
 
@@ -67,8 +67,8 @@ namespace OOPLab4._1
         public override void changeScale(float factor)
         {
             radius = Convert.ToInt32(factor * radius);
-            x = Convert.ToInt32(factor * x);
-            y = Convert.ToInt32(factor * y);
+            //x = Convert.ToInt32(factor * x);
+            //y = Convert.ToInt32(factor * y);
         }
     }
 }

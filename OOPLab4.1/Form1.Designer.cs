@@ -37,15 +37,19 @@
             // 
             // PaintBox
             // 
-            this.PaintBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.PaintBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.PaintBox.AutoSize = true;
             this.PaintBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.PaintBox.Location = new System.Drawing.Point(78, 77);
+            this.PaintBox.Location = new System.Drawing.Point(74, 82);
             this.PaintBox.Name = "PaintBox";
-            this.PaintBox.Size = new System.Drawing.Size(578, 312);
+            this.PaintBox.Size = new System.Drawing.Size(660, 327);
             this.PaintBox.TabIndex = 0;
             this.PaintBox.Paint += new System.Windows.Forms.PaintEventHandler(this.PaintBox_Paint);
             this.PaintBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PaintBox_MouseClick);
             this.PaintBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PaintBox_MouseMove);
+            this.PaintBox.Resize += new System.EventHandler(this.PaintBox_Resize);
             // 
             // checkBoxCtrl
             // 

@@ -168,13 +168,18 @@ namespace OOPLab4._1
         {
             Point leftTop = new Point(), rightBottom = new Point();
             getRect(ref leftTop, ref rightBottom);
-            Point testRightPoint = new Point((int)(rightBottom.X * factor), (int)(rightBottom.Y * factor));
-            if (isNotCollision(leftTop, testRightPoint, leftTopPaintBox, rightBottomPaintBox))
+            Point testRightBottom = new Point((int)(rightBottom.X * factor), (int)(rightBottom.Y * factor));
+            if (isNotCollision(leftTop, testRightBottom, leftTopPaintBox, rightBottomPaintBox) &&
+                testRightBottom.X - leftTop.X > 50 && testRightBottom.Y - leftTop.Y > 50)
             {
                 for (int i = 0; i < storage.size; ++i)
                 {
+                    Point direction = new Point();
+                    direction.X = (int)(factor * (storage.getObject(i).x - leftTop.X)) - (storage.getObject(i).x - leftTop.X);
+                    direction.Y = (int)(factor * (storage.getObject(i).y - leftTop.Y)) - (storage.getObject(i).y - leftTop.Y);
                     if (storage.getObject(i).isActive)
                     {
+                        storage.getObject(i).move(direction);
                         storage.getObject(i).changeScale(factor);
                     }
                 }
@@ -294,6 +299,22 @@ namespace OOPLab4._1
                 PaintBox.Refresh();
             }
             lastMouseCoords = e.Location;
+        }
+
+        private void PaintBox_Resize(object sender, EventArgs e)
+        {
+            rightBottomPaintBox.X = PaintBox.Width;
+            rightBottomPaintBox.Y = PaintBox.Height;
+            for (int i = 0; i < storage.size; ++i)
+            {
+                Point leftTop = new Point(), rightBottom = new Point();
+                storage.getObject(i).getRect(ref leftTop, ref rightBottom);
+                if (!isNotCollision(leftTop, rightBottom, leftTopPaintBox, rightBottomPaintBox))
+                {
+                    storage.pop(i);
+                }
+            }
+            PaintBox.Refresh();
         }
     }
 }
