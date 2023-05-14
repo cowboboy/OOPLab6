@@ -69,5 +69,17 @@ namespace OOPLab4._1
         {
             return ref elements[index];
         }
+
+        public void deleteActiveElements()
+        {
+            for (int i = 0; i < size; i++)
+            {
+                if (elements[i].isActive)
+                {
+                    pop(i);
+                    --i;
+                }
+            }
+        }
     }
 }

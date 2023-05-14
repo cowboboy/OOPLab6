@@ -10,7 +10,7 @@ namespace OOPLab4._1
     {
         public int x { get; set; }
         public int y { get; set; }
-        public abstract bool isActive { get; set; }
+        public bool isActive { get; set; }
         protected Pen selectedPen, standartPen;
         public Color currentColor { get; set; } = Color.White;
         public abstract void myPaint(in Graphics g);

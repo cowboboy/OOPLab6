@@ -33,7 +33,6 @@
             this.checkBoxCollision = new System.Windows.Forms.CheckBox();
             this.setFigure = new System.Windows.Forms.ComboBox();
             this.setColor = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // PaintBox
@@ -45,7 +44,7 @@
             this.PaintBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.PaintBox.Location = new System.Drawing.Point(74, 82);
             this.PaintBox.Name = "PaintBox";
-            this.PaintBox.Size = new System.Drawing.Size(734, 393);
+            this.PaintBox.Size = new System.Drawing.Size(660, 327);
             this.PaintBox.TabIndex = 0;
             this.PaintBox.Paint += new System.Windows.Forms.PaintEventHandler(this.PaintBox_Paint);
             this.PaintBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PaintBox_MouseClick);
@@ -93,21 +92,11 @@
             this.setColor.TabIndex = 4;
             this.setColor.SelectedIndexChanged += new System.EventHandler(this.setColor_SelectedIndexChanged);
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(756, 25);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(50, 20);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "label1";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(898, 517);
-            this.Controls.Add(this.label1);
+            this.ClientSize = new System.Drawing.Size(800, 451);
             this.Controls.Add(this.setColor);
             this.Controls.Add(this.setFigure);
             this.Controls.Add(this.checkBoxCollision);
@@ -130,6 +119,5 @@
         private CheckBox checkBoxCollision;
         private ComboBox setFigure;
         private ComboBox setColor;
-        private Label label1;
     }
 }
