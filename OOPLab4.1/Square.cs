@@ -9,6 +9,18 @@ namespace OOPLab4._1
     internal class Square : Figure
     {
         public int sideLength { get; set; }
+        private bool active;
+        public override bool isActive
+        {
+            get
+            {
+                return active;
+            }
+            set
+            {
+                active = value;
+            }
+        }
 
         public Square(int x, int y, Color color, int sideLength = 50)
         {
@@ -17,7 +29,7 @@ namespace OOPLab4._1
             this.sideLength = sideLength;
             standartPen = new Pen(Color.Black, 5);
             selectedPen = new Pen(Color.Red, 5);
-            isActive = false;
+            active = false;
             currentColor = color;
         }
 

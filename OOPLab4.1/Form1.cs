@@ -9,6 +9,7 @@ namespace OOPLab4._1
         bool pressedCtrl = false;
         bool isMove = false;
         bool isScale = false;
+        bool isBound = false;
 
         Point leftTopPaintBox;
         Point rightBottomPaintBox;
@@ -112,12 +113,12 @@ namespace OOPLab4._1
                 }
                 Point leftTop = new Point(), rightBottom = new Point();
                 element.getRect(ref leftTop, ref rightBottom);
-                if (isNotCollision(leftTop, rightBottom, leftTopPaintBox, rightBottomPaintBox))
+                if (isNotCollision(leftTop, rightBottom))
                 {
                     storage.push_back(element);
                 }
             }
-
+            label1.Text = Convert.ToString(storage.size);
             // Перерисовка
             PaintBox.Refresh();
         }
@@ -146,10 +147,14 @@ namespace OOPLab4._1
             }
             if (e.KeyCode == Keys.Back)
             {
-                storage.deleteActiveElements();
+                deleteActiveElements();
 
                 // Перерисовка
                 PaintBox.Refresh();
+            }
+            if (e.KeyCode == Keys.B)
+            {
+                bindFigures();
             }
             if (e.KeyCode == Keys.Up && isScale)
             {
@@ -160,12 +165,54 @@ namespace OOPLab4._1
             }
         }
 
+        private void bindFigures()
+        {
+            if (sizeActive() > 1)
+            {
+                Group group = new Group();
+                for (int i = 0; i < storage.size; ++i)
+                {
+                    if (storage.getObject(i).isActive)
+                    {
+                        group.addFigure(ref storage.pop(i));
+                        --i;
+                    }
+                }
+                storage.push_back(group);
+            }
+        }
+
+        private void deleteActiveElements()
+        {
+            for (int i = 0; i < storage.size; i++)
+            {
+                if (storage.getObject(i).isActive)
+                {
+                    storage.pop(i);
+                    --i;
+                }
+            }
+        }
+
+        private int sizeActive()
+        {
+            int result = 0;
+            for (int i = 0; i < storage.size; ++i)
+            {
+                if (storage.getObject(i).isActive)
+                {
+                    ++result;
+                }
+            }
+            return result;
+        }
+
         private void changeScale(float factor)
         {
             Point leftTop = new Point(), rightBottom = new Point();
-            getRect(ref leftTop, ref rightBottom);
+            //getRect(ref leftTop, ref rightBottom);
             Point testRightBottom = new Point((int)(rightBottom.X * factor), (int)(rightBottom.Y * factor));
-            if (isNotCollision(leftTop, testRightBottom, leftTopPaintBox, rightBottomPaintBox) &&
+            if (isNotCollision(leftTop, testRightBottom) &&
                 testRightBottom.X - leftTop.X > 50 && testRightBottom.Y - leftTop.Y > 50)
             {
                 for (int i = 0; i < storage.size; ++i)
@@ -229,39 +276,7 @@ namespace OOPLab4._1
             PaintBox.Refresh();
         }
 
-        private void getRect(ref Point leftTop, ref Point rightBottom)
-        {
-            storage.getObject(0).getRect(ref leftTop, ref rightBottom);
-            Point curLeftTop = new Point();
-            Point curRightBottom = new Point();
-            for (int i = 1; i < storage.size; ++i)
-            {
-                Figure curElem = storage.getObject(i);
-                curElem.getRect(ref curLeftTop, ref curRightBottom);
-                if (curElem.isActive)
-                {
-                    if (curLeftTop.X < leftTop.X)
-                    {
-                        leftTop.X = curLeftTop.X;
-                    }
-                    if (curLeftTop.Y < leftTop.Y)
-                    {
-                        leftTop.Y = curLeftTop.Y;
-                    }
-                    if (curRightBottom.X > rightBottom.X)
-                    {
-                        rightBottom.X = curRightBottom.X;
-                    }
-                    if (curRightBottom.Y > rightBottom.Y)
-                    {
-                        rightBottom.Y = curRightBottom.Y;
-                    }
-                }
-            }
-        }
-
-        private bool isNotCollision(in Point leftTop, in Point rightBottom, 
-                                    in Point leftTopPaintBox, in Point rightBottomPaintBox)
+        private bool isNotCollision(in Point leftTop, in Point rightBottom)
         {
             if (leftTop.X > leftTopPaintBox.X && leftTop.Y > leftTopPaintBox.Y &&
                 rightBottom.X < rightBottomPaintBox.X && rightBottom.Y < rightBottomPaintBox.Y)
@@ -277,21 +292,22 @@ namespace OOPLab4._1
             Point rightBottom = new Point();
             if (isMove)
             {
-                getRect(ref leftTop, ref rightBottom);
                 int dX = e.Location.X - lastMouseCoords.X;
                 int dY = e.Location.Y - lastMouseCoords.Y;
-                leftTop.X += dX;
-                leftTop.Y += dY;
-                rightBottom.X += dX;
-                rightBottom.Y += dY;
-                if (isNotCollision(leftTop, rightBottom, leftTopPaintBox, rightBottomPaintBox))
+                for (int i = 0; i < storage.size; ++i)
                 {
-                    for (int i = 0; i < storage.size; ++i)
+                    if (storage.getObject(i).isActive)
                     {
-                        if (storage.getObject(i).isActive)
+                        storage.getObject(i).getRect(ref leftTop, ref rightBottom);
+                        leftTop.X += dX;
+                        leftTop.Y += dY;
+                        rightBottom.X += dX;
+                        rightBottom.Y += dY;
+                        if (isNotCollision(leftTop, rightBottom))
                         {
                             storage.getObject(i).move(new Point(dX, dY));
                         }
+
                     }
                 }
                 PaintBox.Refresh();
@@ -307,7 +323,7 @@ namespace OOPLab4._1
             {
                 Point leftTop = new Point(), rightBottom = new Point();
                 storage.getObject(i).getRect(ref leftTop, ref rightBottom);
-                if (!isNotCollision(leftTop, rightBottom, leftTopPaintBox, rightBottomPaintBox))
+                if (!isNotCollision(leftTop, rightBottom))
                 {
                     storage.pop(i);
                 }

@@ -10,6 +10,19 @@ namespace OOPLab4._1
     {
 
         public int side;
+        private bool active;
+
+        public override bool isActive
+        {
+            get
+            {
+                return active;
+            }
+            set
+            {
+                active = value;
+            }
+        }
         public Triangle(int x, int y, Color color, int side = 100)
         {
             this.x = x;
@@ -17,7 +30,7 @@ namespace OOPLab4._1
             this.side = side;
             standartPen = new Pen(Color.Black, 5);
             selectedPen = new Pen(Color.Red, 5);
-            isActive = false;
+            active = false;
             currentColor = color;
         }
 

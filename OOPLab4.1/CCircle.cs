@@ -9,6 +9,19 @@ namespace OOPLab4._1
     internal class CCircle : Figure
     {
         public int radius { get; set; }
+        private bool active = false;
+
+        public override bool isActive
+        {
+            get
+            {
+                return active;
+            }
+            set
+            {
+                active = value;
+            }
+        }
 
         public CCircle(int x, int y, Color color, int radius = 50)
         {
@@ -17,7 +30,7 @@ namespace OOPLab4._1
             this.radius = radius;
             standartPen = new Pen(Color.Black, 5);
             selectedPen = new Pen(Color.Red, 5);
-            isActive = false;
+            active = false;
             currentColor = color;
         }
 
