@@ -26,16 +26,16 @@ namespace OOPLab4._1
             if (isActive)
             {
                 g.DrawPolygon(selectedPen, new Point[] { new Point(x, y - side), new Point((x + side), y), new Point(x - side, y) });
-                g.FillPolygon(new SolidBrush(currentColor), new Point[] { new Point(x, y - side), new Point((x + side), y), new Point(x - side, y) });
+                
             }
             else
             {
                 g.DrawPolygon(standartPen, new Point[] { new Point(x, y - side), new Point((x + side), y), new Point(x - side, y) });
-                g.FillPolygon(new SolidBrush(currentColor), new Point[] { new Point(x, y - side), new Point((x + side), y), new Point(x - side, y) });
             }
+            g.FillPolygon(new SolidBrush(currentColor), new Point[] { new Point(x, y - side), new Point((x + side), y), new Point(x - side, y) });
         }
 
-        public override bool intersects(Point coords)
+        public override bool intersects(MyVector coords)
         {
 
             int a = (x - coords.X) * (side) - (x - side - x) * (y - side - coords.Y);
@@ -57,13 +57,13 @@ namespace OOPLab4._1
             currentColor = newColor;
         }
 
-        public override void move(Point direction)
+        public override void move(MyVector direction)
         {
             x += direction.X;
             y += direction.Y;
         }
 
-        public override void getRect(ref Point leftTop, ref Point rightBottom)
+        public override void getRect(MyVector leftTop, MyVector rightBottom)
         {
             leftTop.X = x - side;
             leftTop.Y = y - side;

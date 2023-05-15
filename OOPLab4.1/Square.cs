@@ -26,16 +26,15 @@ namespace OOPLab4._1
             if (isActive)
             {
                 g.DrawRectangle(selectedPen, x - sideLength / 2, y - sideLength / 2, sideLength, sideLength);
-                g.FillRectangle(new SolidBrush(currentColor), new Rectangle(x - sideLength / 2, y - sideLength / 2, sideLength, sideLength));
             }
             else
             {
                 g.DrawRectangle(standartPen, x - sideLength / 2, y - sideLength / 2, sideLength, sideLength);
-                g.FillRectangle(new SolidBrush(currentColor), new Rectangle(x - sideLength / 2, y - sideLength / 2, sideLength, sideLength));
             }
+            g.FillRectangle(new SolidBrush(currentColor), new Rectangle(x - sideLength / 2, y - sideLength / 2, sideLength, sideLength));
         }
 
-        public override bool intersects(Point coords)
+        public override bool intersects(MyVector coords)
         {
             if (coords.X >= x - sideLength / 2 && coords.X <= x + sideLength / 2 && coords.Y >= y - sideLength / 2 && coords.Y <= y + sideLength / 2)
             {
@@ -52,13 +51,13 @@ namespace OOPLab4._1
             currentColor = newColor;
         }
 
-        public override void move(Point direction)
+        public override void move(MyVector direction)
         {
             x += direction.X;
             y += direction.Y;
         }
 
-        public override void getRect(ref Point leftTop, ref Point rightBottom)
+        public override void getRect(MyVector leftTop, MyVector rightBottom)
         {
             leftTop.X = x - sideLength / 2;
             leftTop.Y = y - sideLength / 2;

@@ -10,8 +10,7 @@ namespace OOPLab4._1
         bool isMove = false;
         bool isScale = false;
 
-        Point leftTopPaintBox;
-        Point rightBottomPaintBox;
+        MyVector leftTopPaintBox, rightBottomPaintBox;
 
         enum Figures
         {
@@ -24,7 +23,7 @@ namespace OOPLab4._1
         Object[] colors = {Color.White, Color.Blue, Color.Green, Color.Yellow};
         Color currentColor;
 
-        Point lastMouseCoords;
+        MyVector lastMouseCoords;
 
         public Form1()
         {
@@ -36,9 +35,10 @@ namespace OOPLab4._1
             setColor.Items.AddRange(colors);
             setColor.SelectedItem = Color.White;
             currentColor = Color.White;
-            leftTopPaintBox = new Point(0, 0);
-            rightBottomPaintBox.X = PaintBox.Width;
-            rightBottomPaintBox.Y = PaintBox.Height;
+            leftTopPaintBox = new MyVector(0, 0);
+            rightBottomPaintBox = new MyVector(PaintBox.Width, PaintBox.Height);
+            lastMouseCoords = new MyVector();
+            checkBoxCtrl.Checked = true;
         }
 
         private void PaintBox_MouseClick(object sender, MouseEventArgs e)
@@ -52,7 +52,7 @@ namespace OOPLab4._1
                     if (isCollisionActive)
                     {
                         // Делаем активными все выбранные левой кнопкой мыши элементы
-                        if (e.Button == MouseButtons.Left && storage.getObject(i).intersects(e.Location) && isFirstLayer)
+                        if (e.Button == MouseButtons.Left && storage.getObject(i).intersects(new MyVector(e.Location)) && isFirstLayer)
                         {
                             storage.getObject(i).isActive = true;
                             isFirstLayer = false;
@@ -60,7 +60,7 @@ namespace OOPLab4._1
                         // Не затираем активные элементы, так как работает Ctrl
                     } else
                     {
-                        if (e.Button == MouseButtons.Left && storage.getObject(i).intersects(e.Location))
+                        if (e.Button == MouseButtons.Left && storage.getObject(i).intersects(new MyVector(e.Location)))
                         {
                             storage.getObject(i).isActive = true;
                         }
@@ -70,7 +70,7 @@ namespace OOPLab4._1
                 {
                     if (isCollisionActive)
                     {
-                        if (e.Button == MouseButtons.Left && storage.getObject(i).intersects(e.Location) && isFirstLayer)
+                        if (e.Button == MouseButtons.Left && storage.getObject(i).intersects(new MyVector(e.Location)) && isFirstLayer)
                         {
                             storage.getObject(i).isActive = true;
                             isFirstLayer = false;
@@ -82,7 +82,7 @@ namespace OOPLab4._1
                     }
                     else
                     {
-                        if (e.Button == MouseButtons.Left && storage.getObject(i).intersects(e.Location))
+                        if (e.Button == MouseButtons.Left && storage.getObject(i).intersects(new MyVector(e.Location)))
                         {
                             storage.getObject(i).isActive = true;
                         }
@@ -110,9 +110,10 @@ namespace OOPLab4._1
                         element = new Triangle(e.Location.X, e.Location.Y, currentColor);
                         break;
                 }
-                Point leftTop = new Point(), rightBottom = new Point();
-                element.getRect(ref leftTop, ref rightBottom);
-                if (isNotCollision(leftTop, rightBottom, leftTopPaintBox, rightBottomPaintBox))
+                MyVector leftTop = new MyVector();
+                MyVector rightBottom = new MyVector();
+                element.getRect(leftTop, rightBottom);
+                if (isNotCollision(leftTop, rightBottom))
                 {
                     storage.push_back(element);
                 }
@@ -160,21 +161,33 @@ namespace OOPLab4._1
             }
         }
 
+        /// <summary>
+        /// Масштабирует фигуру или группу фигур по заданному коффициенту
+        /// </summary>
+        /// <param name="factor">Для увеличения factor должен быть больше 1, для уменьшения больше 0 и меньше 1</param>
         private void changeScale(float factor)
         {
-            Point leftTop = new Point(), rightBottom = new Point();
-            getRect(ref leftTop, ref rightBottom);
-            Point testRightBottom = new Point((int)(rightBottom.X * factor), (int)(rightBottom.Y * factor));
-            if (isNotCollision(leftTop, testRightBottom, leftTopPaintBox, rightBottomPaintBox) &&
+            MyVector leftTop = new MyVector(); 
+            MyVector rightBottom = new MyVector();
+            getRect(leftTop, rightBottom);
+            MyVector center = (leftTop + rightBottom) / 2;
+            
+            MyVector ray = leftTop - center;
+            MyVector factorRay = (leftTop - center) * factor;
+            MyVector testLeftTop = leftTop + factorRay - ray;
+
+            ray = rightBottom - center;
+            factorRay = (rightBottom - center) * factor;
+            MyVector testRightBottom = rightBottom + factorRay - ray;
+
+            if (isNotCollision(testLeftTop, testRightBottom) &&
                 testRightBottom.X - leftTop.X > 50 && testRightBottom.Y - leftTop.Y > 50)
             {
                 for (int i = 0; i < storage.size; ++i)
                 {
-                    Point direction = new Point();
-                    //direction.X = testRightBottom.X - rightBottom.X;
-                    //direction.Y = testRightBottom.Y - rightBottom.Y;
-                    direction.X = (int)(factor * (storage.getObject(i).x - leftTop.X)) - (storage.getObject(i).x - leftTop.X);
-                    direction.Y = (int)(factor * (storage.getObject(i).y - leftTop.Y)) - (storage.getObject(i).y - leftTop.Y);
+                    ray = new MyVector(storage.getObject(i).x, storage.getObject(i).y) - center;
+                    factorRay = (new MyVector(storage.getObject(i).x, storage.getObject(i).y) - center) * factor;
+                    MyVector direction =  factorRay - ray;
                     if (storage.getObject(i).isActive)
                     {
                         storage.getObject(i).move(direction);
@@ -229,15 +242,20 @@ namespace OOPLab4._1
             PaintBox.Refresh();
         }
 
-        private void getRect(ref Point leftTop, ref Point rightBottom)
+        /// <summary>
+        /// Получает координаты верхнего левого и правого нижнего угла окружающего фигуру или группу фигур прямоугольника
+        /// </summary>
+        /// <param name="leftTop">Координаты верхнего левого угла окружающего прямоугольника</param>
+        /// <param name="rightBottom">Координаты нижнего правого угла окружающего прямоугольника</param>
+        private void getRect(MyVector leftTop, MyVector rightBottom)
         {
-            storage.getObject(0).getRect(ref leftTop, ref rightBottom);
-            Point curLeftTop = new Point();
-            Point curRightBottom = new Point();
+            storage.getObject(0).getRect(leftTop, rightBottom);
+            MyVector curLeftTop = new MyVector();
+            MyVector curRightBottom = new MyVector();
             for (int i = 1; i < storage.size; ++i)
             {
                 Figure curElem = storage.getObject(i);
-                curElem.getRect(ref curLeftTop, ref curRightBottom);
+                curElem.getRect(curLeftTop, curRightBottom);
                 if (curElem.isActive)
                 {
                     if (curLeftTop.X < leftTop.X)
@@ -260,8 +278,13 @@ namespace OOPLab4._1
             }
         }
 
-        private bool isNotCollision(in Point leftTop, in Point rightBottom, 
-                                    in Point leftTopPaintBox, in Point rightBottomPaintBox)
+        /// <summary>
+        /// Выходит ли прямоугольник с координатами верхнего левого и нижнего правого угла за границы области для рисования
+        /// </summary>
+        /// <param name="leftTop">Координаты верхнего левого угла окружающего прямоугольника</param>
+        /// <param name="rightBottom">Координаты нижнего правого угла окружающего прямоугольника</param>
+        /// <returns>Выводит true, если пересечения нет, false, если есть</returns>
+        private bool isNotCollision(MyVector leftTop, MyVector rightBottom)
         {
             if (leftTop.X > leftTopPaintBox.X && leftTop.Y > leftTopPaintBox.Y &&
                 rightBottom.X < rightBottomPaintBox.X && rightBottom.Y < rightBottomPaintBox.Y)
@@ -273,43 +296,41 @@ namespace OOPLab4._1
 
         private void PaintBox_MouseMove(object sender, MouseEventArgs e)
         {
-            Point leftTop = new Point();
-            Point rightBottom = new Point();
+            MyVector leftTop = new MyVector();
+            MyVector rightBottom = new MyVector();
             if (isMove)
             {
-                getRect(ref leftTop, ref rightBottom);
+                getRect(leftTop, rightBottom);
                 int dX = e.Location.X - lastMouseCoords.X;
                 int dY = e.Location.Y - lastMouseCoords.Y;
-                leftTop.X += dX;
-                leftTop.Y += dY;
-                rightBottom.X += dX;
-                rightBottom.Y += dY;
-                if (isNotCollision(leftTop, rightBottom, leftTopPaintBox, rightBottomPaintBox))
+                MyVector direction = new MyVector(dX, dY);
+                if (isNotCollision(leftTop + direction, rightBottom + direction))
                 {
                     for (int i = 0; i < storage.size; ++i)
                     {
                         if (storage.getObject(i).isActive)
                         {
-                            storage.getObject(i).move(new Point(dX, dY));
+                            storage.getObject(i).move(direction);
                         }
                     }
                 }
                 PaintBox.Refresh();
             }
-            lastMouseCoords = e.Location;
+            lastMouseCoords.changeCoords(e.Location);
         }
 
         private void PaintBox_Resize(object sender, EventArgs e)
         {
-            rightBottomPaintBox.X = PaintBox.Width;
-            rightBottomPaintBox.Y = PaintBox.Height;
+            rightBottomPaintBox.changeCoords(PaintBox.Size);
             for (int i = 0; i < storage.size; ++i)
             {
-                Point leftTop = new Point(), rightBottom = new Point();
-                storage.getObject(i).getRect(ref leftTop, ref rightBottom);
-                if (!isNotCollision(leftTop, rightBottom, leftTopPaintBox, rightBottomPaintBox))
+                MyVector leftTop = new MyVector();
+                MyVector rightBottom = new MyVector();
+                storage.getObject(i).getRect(leftTop, rightBottom);
+                if (!isNotCollision(leftTop, rightBottom))
                 {
                     storage.pop(i);
+                    --i;
                 }
             }
             PaintBox.Refresh();

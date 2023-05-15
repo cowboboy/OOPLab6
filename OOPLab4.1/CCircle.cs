@@ -26,15 +26,15 @@ namespace OOPLab4._1
             if (isActive)
             {
                 g.DrawEllipse(selectedPen, x - radius, y - radius, radius * 2, radius * 2);
-                g.FillEllipse(new SolidBrush(currentColor), new Rectangle(x - radius, y - radius, radius * 2, radius * 2));
+                
             } else
             {
                 g.DrawEllipse(standartPen, x - radius, y - radius, radius * 2, radius * 2);
-                g.FillEllipse(new SolidBrush(currentColor), new Rectangle(x - radius, y - radius, radius * 2, radius * 2));
             }
+            g.FillEllipse(new SolidBrush(currentColor), new Rectangle(x - radius, y - radius, radius * 2, radius * 2));
         }
 
-        public override bool intersects(Point coords)
+        public override bool intersects(MyVector coords)
         {
             if ((coords.X - x) * (coords.X - x) + (coords.Y - y) * (coords.Y - y) <= radius * radius)
             {
@@ -50,13 +50,13 @@ namespace OOPLab4._1
             currentColor = newColor;
         }
 
-        public override void move(Point direction)
+        public override void move(MyVector direction)
         {
             x += direction.X;
             y += direction.Y;
         }
 
-        public override void getRect(ref Point leftTop, ref Point rightBottom)
+        public override void getRect(MyVector leftTop, MyVector rightBottom)
         {
             leftTop.X = x - radius;
             leftTop.Y = y - radius;
@@ -67,8 +67,6 @@ namespace OOPLab4._1
         public override void changeScale(float factor)
         {
             radius = Convert.ToInt32(factor * radius);
-            //x = Convert.ToInt32(factor * x);
-            //y = Convert.ToInt32(factor * y);
         }
     }
 }
